@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const createUserAndUpdateIdentity = require('./POST/prueba');
 const base64Encode = require('./GET/pruebaxapikeyLogin');
-const loginAndGetIdentity = require('./GET/login');
+const { loginAndGetIdentity, getGlobalIdentityId } = require('./GET/login');
 const getIdentityByNumber = require('./GET/getIdentityNumber');
 const getTransactionsByIdentityId = require('./GET/getTransactions');
 const getWithdrawalsByIdentityId = require('./GET/getWithdrawals');
@@ -136,11 +136,10 @@ app.get('/get-data/:number', async (req, res) => {
   }
 });
 
-// Ruta para la solicitud GET de transacciones por identityId
-app.get('/get-transactions/:identityId', async (req, res) => {
-  const identityId = req.params.identityId;
+// Ruta para obtener transacciones
+app.get('/get-transactions', async (req, res) => {
   try {
-    const transactions = await getTransactionsByIdentityId(identityId);
+    const transactions = await getTransactionsByIdentityId();
     res.json(transactions);
   } catch (error) {
     console.error(error);
@@ -148,11 +147,10 @@ app.get('/get-transactions/:identityId', async (req, res) => {
   }
 });
 
-// Ruta para la solicitud GET de retiros por identityId
-app.get('/get-withdrawals/:identityId', async (req, res) => {
-  const identityId = req.params.identityId;
+// Ruta para obtener retiros
+app.get('/get-withdrawals', async (req, res) => {
   try {
-    const withdrawals = await getWithdrawalsByIdentityId(identityId);
+    const withdrawals = await getWithdrawalsByIdentityId();
     res.json(withdrawals);
   } catch (error) {
     console.error(error);
@@ -160,11 +158,10 @@ app.get('/get-withdrawals/:identityId', async (req, res) => {
   }
 });
 
-// Ruta para la solicitud GET de envíos desde identityId
-app.get('/get-sends-from/:identityId', async (req, res) => {
-  const identityId = req.params.identityId;
+// Ruta para obtener envíos desde
+app.get('/get-sends-from', async (req, res) => {
   try {
-    const sendsFrom = await getSendsFromByIdentityId(identityId);
+    const sendsFrom = await getSendsFromByIdentityId();
     res.json(sendsFrom);
   } catch (error) {
     console.error(error);
@@ -172,11 +169,10 @@ app.get('/get-sends-from/:identityId', async (req, res) => {
   }
 });
 
-// Ruta para la solicitud GET de envíos hacia identityId
-app.get('/get-sends-to/:identityId', async (req, res) => {
-  const identityId = req.params.identityId;
+// Ruta para obtener envíos hacia
+app.get('/get-sends-to', async (req, res) => {
   try {
-    const sendsTo = await getSendsToByIdentityId(identityId);
+    const sendsTo = await getSendsToByIdentityId();
     res.json(sendsTo);
   } catch (error) {
     console.error(error);
