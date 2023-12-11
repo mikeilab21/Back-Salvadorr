@@ -49,10 +49,7 @@ async function loginAndGetIdentity(username, password) {
 
   } catch (error) {
     console.error('Error en la solicitud FETCH:', error);
-    return {
-      success: false,
-      identityId: null,
-    };
+    throw new Error(`Error en la solicitud FETCH:`, error);
   }
 }
 
