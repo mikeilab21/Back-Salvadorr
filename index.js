@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const createUserAndUpdateIdentity = require('./POST/prueba');
+const verification = require('./POST/verification');
 const base64Encode = require('./GET/pruebaxapikeyLogin');
 const { loginAndGetIdentity, getGlobalIdentityId } = require('./GET/login');
 const getIdentityByNumber = require('./GET/getIdentityNumber');
@@ -59,6 +60,10 @@ app.post('/post-information', async (req, res) => {
     res.status(500).send('Error en la solicitud POST.');
   }
 });
+
+
+// Ruta para la verificación (subida de documentos)
+app.use('/verification', verification);
 
 // Ruta que requiere autenticación
 app.get('/get-login', async (req, res) => {
