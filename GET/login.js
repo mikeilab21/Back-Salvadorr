@@ -5,10 +5,12 @@ const realmKey = '5c179f4a-a1b9-4945-a0fb-2c3fc9534d17';
 
 // Variable global para almacenar el identityId
 let globalIdentityId = null;
+let uniqueUserApiKey = null;
 
 async function loginAndGetIdentity(username, password) {
   // 2a: Login User
   const userApiKey = encode(`${realmKey}:${username}:${password}`);
+
 
   // 2b: Login + Recuperar Identity
   const apiUrlGetIdentity = 'https://api.orangepill.cloud/v1/users?populate=identity';
@@ -38,10 +40,12 @@ async function loginAndGetIdentity(username, password) {
 
       // Almacena el identityId en la variable global
       globalIdentityId = identityInfo.id;
+      uniqueUserApiKey = userApiKey;
 
       return {
         success: true,
         identityId: globalIdentityId,
+        userApiKey: uniqueUserApiKey,
       };
     } else {
       throw new Error(`Error de red: ${responseGetIdentity.status}`);
@@ -53,4 +57,4 @@ async function loginAndGetIdentity(username, password) {
   }
 }
 
-module.exports = { loginAndGetIdentity, getGlobalIdentityId: () => globalIdentityId };
+module.exports = { loginAndGetIdentity, getGlobalIdentityId: () => globalIdentityId, getUniqueUserApiKey: () => uniqueUserApiKey};

@@ -1,9 +1,11 @@
 const fetch = require('node-fetch');
-const apiKey = 'NWMxNzlmNGEtYTFiOS00OTQ1LWEwZmItMmMzZmM5NTM0ZDE3OlN2ZXgwNzcwQGdtYWlsLmNvbTpQQHNzdzByZA==';
+//const apiKey = 'NWMxNzlmNGEtYTFiOS00OTQ1LWEwZmItMmMzZmM5NTM0ZDE3OlN2ZXgwNzcwQGdtYWlsLmNvbTpQQHNzdzByZA==';
 const { getGlobalIdentityId } = require('./login');
+const { getUniqueUserApiKey} = require('./login')
 
 async function getTransactionsByIdentityId() {
   const existingIdentityId = getGlobalIdentityId();
+  const userApiKey = getUniqueUserApiKey();
 
   if (existingIdentityId) {
     const apiUrl = `https://api.orangepill.cloud/v1/transactions/all?scope=-own,all&query={"type":"deposit","destination.holder":"${existingIdentityId}"}`;
@@ -16,7 +18,7 @@ async function getTransactionsByIdentityId() {
     const fetchOptions = {
       method: 'GET',
       headers: {
-        'x-api-key': apiKey,
+        'x-api-key': userApiKey,
       },
     };
 
