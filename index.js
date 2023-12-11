@@ -1,22 +1,19 @@
-const express = require('express')
+// Importaciones
+const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const createUserAndUpdateIdentity = require('./POST/prueba');
-const verification = require('./POST/verification');
-const base64Encode = require('./GET/pruebaxapikeyLogin');
-const { loginAndGetIdentity, getGlobalIdentityId, getUniqueUserApiKey } = require('./GET/login');
-const getIdentityByNumber = require('./GET/getIdentityNumber');
-const getTransactionsByIdentityId = require('./GET/getTransactions');
-const getWithdrawalsByIdentityId = require('./GET/getWithdrawals');
-const getSendsFromByIdentityId = require('./GET/getSendsFrom');
-const getSendsToByIdentityId = require('./GET/getSendsTo');
-const getAllSend = require('./GET/getAll');
-const getCurrencies = require('./DROPDOWN/currencies');
-const getDocumentType = require('./DROPDOWN/documentType');
-const getInternationalCodes = require('./DROPDOWN/countryCodes');
+const verification = require('./verification_services/verification');
+const userRegistration = require('./registration_login_services/userRegistration');
+const { login, getGlobalIdentityId, getUniqueUserApiKey } = require('./registration_login_services/login');
+const getDeposits = require('./financial_services/getDeposits');
+const getWithdrawals = require('./financial_services/getWithdrawals');
+const getSentTransactions = require('./financial_services/getSentTransactions');
+const getReceivedTransactions = require('./financial_services/getReceivedTransactions');
+const getCurrencies = require('./dropdown_services/currencies');
+const getDocumentType = require('./dropdown_services/documentType');
+const getInternationalCodes = require('./dropdown_services/countryCodes');
 
-
-const app = express(); 
+const app = express();
 const port = 5000;
 
 // Middleware para manejar solicitudes JSON
@@ -24,12 +21,15 @@ app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
 
+// Rutas
 
-// Ruta para la solicitud POST desde el frontend para usuarios 1a y 1b
-app.post('/post-information', async (req, res) => {
+// ---  Rutas para los servicios financieros ---
+
+// Ruta para la solicitud de registro de usuarios - 1a, 1b, 1c, 1d, 1e
+app.post('/register-users', async (req, res) => {
   const requestData = req.body;
   try {
-    const success = await createUserAndUpdateIdentity(
+    const success = await userRegistration(
       requestData.username,
       requestData.password,
       requestData.country,
@@ -48,34 +48,27 @@ app.post('/post-information', async (req, res) => {
     );
 
     if (success) {
-      // Operación exitosa (código 200)
       res.status(200).send('Autenticación Completada');
     } else {
-      // Error de autenticación (código 401)
       res.status(401).send('Error de autenticación');
     }
   } catch (error) {
-    // Error interno del servidor (código 500)
     console.error(error);
     res.status(500).send('Error en la solicitud POST.');
   }
 });
 
 
-// Ruta para la verificación (subida de documentos)
-app.use('/verification', verification);
 
-// Ruta que requiere autenticación
-app.get('/get-login', async (req, res) => {
+// Ruta para el logeo del usuario - 2a, 2b
+app.get('/login', async (req, res) => {
   const username = req.query.username;
   const password = req.query.password;
 
   try {
-    // Llama a la función de autenticación
-    const userData = await loginAndGetIdentity(username, password);
+    const userData = await login(username, password);
 
     if (userData) {
-      // Si la autenticación es exitosa, devuelve la información del usuario
       res.status(200).json(userData);
     } else {
       res.status(401).send('Error de autenticación');
@@ -83,17 +76,67 @@ app.get('/get-login', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send('Error en la autenticación.');
-  }
+  }
 });
 
 
-// Ruta para codificación en base64
-app.post('/base64encode', (req, res) => {
-  const { username, password } = req.body;
-  const userApiKey = base64Encode(username, password);
-  res.json({ userApiKey });
+// Ruta para obtener los depositos
+app.get('/get-deposits', async (req, res) => {
+  try {
+    const transactions = await getDeposits();
+    res.json(transactions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error en la solicitud GET de transacciones.');
+  }
 });
 
+// Ruta para obtener los retiros
+app.get('/get-withdrawals', async (req, res) => {
+  try {
+    const withdrawals = await getWithdrawals();
+    res.json(withdrawals);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error en la solicitud GET de retiros.');
+  }
+});
+
+// Ruta para obtener las transacciones enviadas
+app.get('/get-send-transactions', async (req, res) => {
+  try {
+    const sendsFrom = await getSentTransactions();
+    res.json(sendsFrom);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error en la solicitud GET de envíos desde.');
+  }
+});
+
+// Ruta para obtener las transacciones recibidas
+app.get('/get-received-transactions', async (req, res) => {
+  try {
+    const sendsTo = await getReceivedTransactions();
+    res.json(sendsTo);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error en la solicitud GET de envíos hacia.');
+  }
+});
+
+
+
+// ---  Rutas para la verificación ---
+
+// Incluir ruta de subir archivos de la verificación
+const verification = require('./verification_services/verification');
+
+// Usar la ruta de subir archivos de la verificación
+app.use(verification);
+
+
+
+// ---  Rutas para los Dropdowns ---
 
 // Ruta para obtener la lista de monedas
 app.get('/currencies', async (req, res) => {
@@ -106,8 +149,8 @@ app.get('/currencies', async (req, res) => {
   }
 });
 
-// Ruta para obtener la lista de tipos de documentos
-app.get('/documentType', async (req, res) => {
+// Ruta para obtener la lista de tipos de documento
+app.get('/document-types', async (req, res) => {
   try {
     const documentType = await getDocumentType();
     res.json(documentType);
@@ -117,7 +160,7 @@ app.get('/documentType', async (req, res) => {
   }
 });
 
-// Ruta para obtener la información de los códigos internacionales para celulares
+// Ruta para obtener la lista de códigos internacionales para celulares
 app.get('/international-codes', async (req, res) => {
   try {
     const internationalCodes = await getInternationalCodes();
@@ -127,82 +170,6 @@ app.get('/international-codes', async (req, res) => {
     res.status(500).json({ error: 'Error al recuperar códigos móviles internacionales' });
   }
 });
-
-
-// Ruta para la solicitud GET desde el frontend con número
-app.get('/get-data/:number', async (req, res) => {
-  const number = req.params.number;
-  try {
-    const data = await getIdentityByNumber(number);  // Usar la función actualizada
-    res.json(data);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error en la solicitud GET.');
-  }
-});
-
-// Ruta para obtener transacciones
-app.get('/get-transactions', async (req, res) => {
-  try {
-    const transactions = await getTransactionsByIdentityId();
-    res.json(transactions);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error en la solicitud GET de transacciones.');
-  }
-});
-
-// Ruta para obtener retiros
-app.get('/get-withdrawals', async (req, res) => {
-  try {
-    const withdrawals = await getWithdrawalsByIdentityId();
-    res.json(withdrawals);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error en la solicitud GET de retiros.');
-  }
-});
-
-// Ruta para obtener envíos desde
-app.get('/get-sends-from', async (req, res) => {
-  try {
-    const sendsFrom = await getSendsFromByIdentityId();
-    res.json(sendsFrom);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error en la solicitud GET de envíos desde.');
-  }
-});
-
-// Ruta para obtener envíos hacia
-app.get('/get-sends-to', async (req, res) => {
-  try {
-    const sendsTo = await getSendsToByIdentityId();
-    res.json(sendsTo);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error en la solicitud GET de envíos hacia.');
-  }
-});
-
-
-// Ruta para la solicitud GET desde el frontend con número
-app.get('/get-all-send', async (req, res) => {
-  try {
-    const data = await getAllSend();  // Usar la función actualizada
-    res.json(data);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Error en la solicitud GET.');
-  }
-});
-
-
-// Incluir ruta de subir archivos
-const postVerification = require('./POST/verification');
-
-// Usar la ruta de subir archivos
-app.use(postVerification);
 
 
 // Iniciar el servidor

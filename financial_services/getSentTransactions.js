@@ -1,18 +1,16 @@
+// Importaciones
 const fetch = require('node-fetch');
-//const apiKey = 'NWMxNzlmNGEtYTFiOS00OTQ1LWEwZmItMmMzZmM5NTM0ZDE3OlN2ZXgwNzcwQGdtYWlsLmNvbTpQQHNzdzByZA==';
-const { getGlobalIdentityId } = require('./login');
-const { getUniqueUserApiKey} = require('./login')
+const { getGlobalIdentityId } = require('../registration_login_services/login');
+const { getUniqueUserApiKey } = require('../registration_login_services/login')
+const { transformarFechaCreacion } = require('../formatting_services/transformDateFormat');
 
-async function getSendsFromByIdentityId() {
+// Obtener las transacciones enviadas por IdentityId
+async function getSentTransactions() {
   const existingIdentityId = getGlobalIdentityId();
   const userApiKey = getUniqueUserApiKey();
 
   if (existingIdentityId) {
     const apiUrl = `https://api.orangepill.cloud/v1/transactions/all?scope=-own,all&query={"type":"send","destination.holder":"${existingIdentityId}"}`;
-
-    // Muestra el apiUrl en la consola antes de hacer la solicitud FETCH
-    console.log('API URL:', apiUrl);
-
 
     const fetchOptions = {
       method: 'GET',
@@ -29,7 +27,11 @@ async function getSendsFromByIdentityId() {
       }
 
       const data = await response.json();
-      return data;
+
+      // Utiliza el servicio para transformar la fecha de creación
+      const dataConFechaTransformada = data.map(transformarFechaCreacion);
+
+      return dataConFechaTransformada;
     } catch (error) {
       throw new Error('Error en la solicitud FETCH:', error);
     }
@@ -39,4 +41,4 @@ async function getSendsFromByIdentityId() {
   }
 }
 
-module.exports = getSendsFromByIdentityId;
+module.exports = getSentTransactions;

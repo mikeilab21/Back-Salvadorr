@@ -1,3 +1,4 @@
+// Importaciones
 const fetch = require('node-fetch');
 const { encode } = require('base-64');
 
@@ -7,7 +8,7 @@ const realmKey = '5c179f4a-a1b9-4945-a0fb-2c3fc9534d17';
 let globalIdentityId = null;
 let uniqueUserApiKey = null;
 
-async function loginAndGetIdentity(username, password) {
+async function login(username, password) {
   // 2a: Login User
   const userApiKey = encode(`${realmKey}:${username}:${password}`);
 
@@ -23,17 +24,8 @@ async function loginAndGetIdentity(username, password) {
   };
 
   try {
-    // Mostrar datos antes de enviar
-    console.log('DATOS ANTES DE ENVIAR 2A Y 2B: LOGIN Y RECUPERAR IDENTITY:');
-    console.log('USER-X-API-KEY:', userApiKey);
 
     const responseGetIdentity = await fetch(apiUrlGetIdentity, fetchOptionsGetIdentity);
-
-    const dataLogin = await responseGetIdentity.json();
-    console.log(dataLogin);
-
-    // Imprime el objeto identity de manera más detallada
-    console.log('Identity Object:', JSON.stringify(dataLogin.rows[0].identity, null, 2));
     
     if (responseGetIdentity.ok) {
       const identityInfo = dataLogin.rows[0].identity;
@@ -57,4 +49,4 @@ async function loginAndGetIdentity(username, password) {
   }
 }
 
-module.exports = { loginAndGetIdentity, getGlobalIdentityId: () => globalIdentityId, getUniqueUserApiKey: () => uniqueUserApiKey};
+module.exports = { login, getGlobalIdentityId: () => globalIdentityId, getUniqueUserApiKey: () => uniqueUserApiKey};
