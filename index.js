@@ -128,9 +128,6 @@ app.get('/get-received-transactions', async (req, res) => {
 
 // ---  Rutas para la verificación ---
 
-// Incluir ruta de subir archivos de la verificación
-const verification = require('./verification_services/verification');
-
 // Usar la ruta de subir archivos de la verificación
 app.use(verification);
 

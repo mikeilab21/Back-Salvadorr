@@ -26,6 +26,7 @@ async function login(username, password) {
   try {
 
     const responseGetIdentity = await fetch(apiUrlGetIdentity, fetchOptionsGetIdentity);
+    const dataLogin = await responseGetIdentity.json();
     
     if (responseGetIdentity.ok) {
       const identityInfo = dataLogin.rows[0].identity;

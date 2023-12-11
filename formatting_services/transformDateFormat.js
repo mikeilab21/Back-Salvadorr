@@ -1,11 +1,11 @@
 // Transformar la Fecha Recibida
-function transformarFechaCreacion(response) {
+function transformDateCreation(response) {
 
     // Intentar obtener "created_at" de la respuesta principal
-    const timestampInMilliseconds = response.created_at || obtenerCreatedAtDeRelated(response.related);
+    const timestampInMilliseconds = response.created_at || getCreatedAtDeRelated(response.related);
   
     if (timestampInMilliseconds) {
-      transformarFecha(response, timestampInMilliseconds);
+      transformDate(response, timestampInMilliseconds);
     } else {
       console.error('La respuesta no contiene la propiedad "created_at". No se pudo transformar la fecha.');
     }
@@ -14,7 +14,7 @@ function transformarFechaCreacion(response) {
   }
   
   // Intentar obtener "created_at" en la matriz "related"
-  function obtenerCreatedAtDeRelated(related) {
+  function getCreatedAtDeRelated(related) {
    
     if (related && related.length > 0) {
       for (const item of related) {
@@ -28,7 +28,7 @@ function transformarFechaCreacion(response) {
   }
   
   // Transformar la Fecha al Formato YYYY-MM-DD
-  function transformarFecha(item, timestampInMilliseconds) {
+  function transformDate(item, timestampInMilliseconds) {
     
     const fechaTransformada = new Date(timestampInMilliseconds);
     item.transformed_date = fechaTransformada.toISOString().split('T')[0]; 
@@ -36,5 +36,5 @@ function transformarFechaCreacion(response) {
   }
   
   module.exports = {
-    transformarFechaCreacion,
+    transformDateCreation,
   };

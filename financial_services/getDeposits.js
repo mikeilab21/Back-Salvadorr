@@ -2,7 +2,7 @@
 const fetch = require('node-fetch');
 const { getGlobalIdentityId } = require('../registration_login_services/login');
 const { getUniqueUserApiKey } = require('../registration_login_services/login');
-const { transformarFechaCreacion } = require('../formatting_services/transformDateFormat');
+const { transformDateCreation } = require('../formatting_services/transformDateFormat');
 
 // Obtener los depositos por IdentityId
 async function getDeposits() {
@@ -29,9 +29,9 @@ async function getDeposits() {
       const data = await response.json();
 
       // Utiliza el servicio para transformar la fecha de creación
-      const dataConFechaTransformada = data.map(transformarFechaCreacion);
+      const dataWithTransformedDate = data.map(transformDateCreation);
 
-      return dataConFechaTransformada;
+      return dataWithTransformedDate;
     } catch (error) {
       console.error('Error en la solicitud FETCH:', error.message);
       throw error; 

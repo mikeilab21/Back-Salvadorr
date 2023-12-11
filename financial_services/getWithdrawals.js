@@ -2,7 +2,7 @@
 const fetch = require('node-fetch');
 const { getGlobalIdentityId } = require('../registration_login_services/login');
 const { getUniqueUserApiKey } = require('../registration_login_services/login')
-const { transformarFechaCreacion } = require('../formatting_services/transformDateFormat');
+const { transformDateCreation } = require('../formatting_services/transformDateFormat');
 
 // Obtener los retiros por IdentityId
 async function getWithdrawals() {
@@ -29,9 +29,9 @@ async function getWithdrawals() {
       const data = await response.json();
 
       // Utiliza el servicio para transformar la fecha de creación
-      const dataConFechaTransformada = data.map(transformarFechaCreacion);
+      const dataWithTransformedDate = data.map(transformDateCreation);
 
-      return dataConFechaTransformada;
+      return dataWithTransformedDate;
     } catch (error) {
       throw new Error('Error en la solicitud FETCH:', error);
     }

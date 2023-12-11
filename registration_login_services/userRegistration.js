@@ -29,6 +29,8 @@ async function userRegistration(username, password, country, currency, countryCo
     };
 
     const responseCreateUser = await fetch(apiUrlCreateUser, fetchOptionsCreateUser);
+    console.log("RESPONSE CREATE USER")
+    console.log(responseCreateUser);
 
     if (!responseCreateUser.ok) {
       throw new Error(`Error de red al crear usuario: ${responseCreateUser.status}`);
@@ -57,6 +59,8 @@ async function userRegistration(username, password, country, currency, countryCo
     };
 
     const responseUpdateIdentity = await fetch(apiUrlUpdateIdentity, fetchOptionsUpdateIdentity);
+    console.log("RESPONSE UPDATE IDENTITY")
+    console.log(responseUpdateIdentity);
 
     if (!responseUpdateIdentity.ok) {
       const errorText = await responseUpdateIdentity.text();
@@ -81,6 +85,8 @@ async function userRegistration(username, password, country, currency, countryCo
     };
 
     const responseCreateAlias = await fetch(apiUrlCreateAlias, fetchOptionsCreateAlias);
+    console.log("RESPONSE CREATE ALIAS")
+    console.log(responseCreateAlias);
 
     if (!responseCreateAlias.ok) {
       const errorText = await responseCreateAlias.text();
@@ -125,6 +131,8 @@ async function userRegistration(username, password, country, currency, countryCo
     };
 
     const responseCreateIdentityWithInfo = await fetch(apiUrlCreateIdentityWithInfo, fetchOptionsCreateIdentityWithInfo);
+    console.log("RESPONSE CREATE IDENTITY WITH INFO")
+    console.log(responseCreateIdentityWithInfo);
 
     if (!responseCreateIdentityWithInfo.ok) {
       const errorText = await responseCreateIdentityWithInfo.text();
@@ -152,6 +160,8 @@ async function userRegistration(username, password, country, currency, countryCo
 
 
     const responseNotification = await fetch(apiUrlNotification, fetchOptionsNotification);
+    console.log("RESPONSE RESPONSE NOTIFICATION")
+    console.log(responseNotification);
 
     if (!responseNotification.ok) {
       const errorText = await responseNotification.text();
