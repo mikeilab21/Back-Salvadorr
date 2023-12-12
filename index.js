@@ -3,6 +3,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const verification = require('./verification_services/verification');
+const deleteDocument = require('./verification_services/deleteDocument');
+const deleteFolder = require('./verification_services/deleteFolder');
 const userRegistration = require('./registration_login_services/userRegistration');
 const { login, getGlobalIdentityId, getUniqueUserApiKey } = require('./registration_login_services/login');
 const getDeposits = require('./financial_services/getDeposits');
@@ -130,6 +132,12 @@ app.get('/get-received-transactions', async (req, res) => {
 
 // Usar la ruta de subir archivos de la verificación
 app.use(verification);
+
+// Usar la ruta de borrar archivos de la verificación
+app.use(deleteDocument);
+
+// Usar la ruta de borrar carpetas de la verificación
+app.use(deleteFolder);
 
 
 

@@ -25,7 +25,7 @@ router.use(cors())
 // POST API para la guardar los documentos en Google Drive
 router.post('/upload', upload.array('files'), async (req, res) => {
   try {
-    const keyFile = path.join(__dirname, 'apikey.json');
+    const keyFile = path.join(__dirname, 'apiKeySalvador.json');
 
     const auth = new google.auth.GoogleAuth({
       keyFile: keyFile,
