@@ -10,7 +10,7 @@ async function getReceivedTransactions() {
   const userApiKey = getUniqueUserApiKey();
 
   if (existingIdentityId) {
-    const apiUrl = `https://api.orangepill.cloud/v1/transactions/all?scope=-own,all&query={"type":"send","source.holder":"${existingIdentityId}"}`;
+    const apiUrl = `https://api.orangepill.cloud/v1/transactions/all?scope=-own,all&query={"type":"send","destination.holder":"${existingIdentityId}"}`;
 
     const fetchOptions = {
       method: 'GET',

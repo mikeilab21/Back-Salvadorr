@@ -29,8 +29,8 @@ async function userRegistration(username, password, country, currency, countryCo
     };
 
     const responseCreateUser = await fetch(apiUrlCreateUser, fetchOptionsCreateUser);
-    //console.log("RESPONSE CREATE USER")
-    //console.log(responseCreateUser);
+    console.log("RESPONSE CREATE USER")
+    console.log(responseCreateUser);
 
     if (!responseCreateUser.ok) {
       throw new Error(`Error de red al crear usuario: ${responseCreateUser.status}`);
