@@ -1,9 +1,11 @@
 // Importaciones
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 const fetch = require('node-fetch');
 const cleanCountryCode = require('../formatting_services/transformCountryFormat');
 
-const xapiKey = 'NWMxNzlmNGEtYTFiOS00OTQ1LWEwZmItMmMzZmM5NTM0ZDE3OlN2ZXgwNzcwQGdtYWlsLmNvbTpQQHNzdzByZA==';
-
+const xapiKey = process.env.ORANGEPILL_API_KEY;
 async function userRegistration(username, password, country, currency, countryCode, phoneNumber, firstName, lastName, address, city, birthDate, documentType, documentNumber, passportNumber, email) {
   try {
     // Limpiar el código de marcación
